@@ -1,7 +1,7 @@
 ﻿#property link          "https://www.earnforex.com/metatrader-indicators/stochastic-multi-timeframe/"
-#property version       "1.03"
+#property version       "1.04"
 
-#property copyright     "EarnForex.com - 2019-2023"
+#property copyright     "EarnForex.com - 2019-2024"
 #property description   "See the status of the stochastic indicator on multiple timeframes."
 #property description   " "
 #property description   "WARNING: Use this software at your own risk."
@@ -56,6 +56,8 @@ input bool UncertainAlerts = false;              // Alert on 'Uncertain'?
 input string Comment_4 = "===================="; // Graphical Objects
 input int Xoff = 20;                             // Horizontal spacing for the control panel
 input int Yoff = 20;                             // Vertical spacing for the control panel
+input ENUM_BASE_CORNER ChartCorner = CORNER_LEFT_UPPER;
+input int FontSize = 10;                         // Font size
 input string IndicatorName = "MQLTA-STMTF";      // Indicator Name (to name the objects)
 
 double IndCurr[9], IndPrevDiff[9], IndCurrAdd[9];
@@ -371,9 +373,15 @@ string PanelSig = IndicatorName + "-P-SIG";
 //+------------------------------------------------------------------+
 void DrawPanel()
 {
+    int SignX = 1;
+    if ((ChartCorner == CORNER_RIGHT_UPPER) || (ChartCorner == CORNER_RIGHT_LOWER))
+    {
+        SignX = -1; // Correction for right-side panel position.
+    }
     string IndicatorNameTextBox = "MT STOCHASTIC";
     int Rows = 1;
     ObjectCreate(0, PanelBase, OBJ_RECTANGLE_LABEL, 0, 0, 0);
+    ObjectSetInteger(0, PanelBase, OBJPROP_CORNER, ChartCorner);
     ObjectSetInteger(0, PanelBase, OBJPROP_XDISTANCE, Xoff);
     ObjectSetInteger(0, PanelBase, OBJPROP_YDISTANCE, Yoff);
     ObjectSetInteger(0, PanelBase, OBJPROP_XSIZE, PanelRecX);
@@ -382,17 +390,17 @@ void DrawPanel()
     ObjectSetInteger(0, PanelBase, OBJPROP_BORDER_TYPE, BORDER_FLAT);
     ObjectSetInteger(0, PanelBase, OBJPROP_STATE, false);
     ObjectSetInteger(0, PanelBase, OBJPROP_HIDDEN, true);
-    ObjectSetInteger(0, PanelBase, OBJPROP_FONTSIZE, 8);
+    ObjectSetInteger(0, PanelBase, OBJPROP_FONTSIZE, FontSize);
     ObjectSetInteger(0, PanelBase, OBJPROP_SELECTABLE, false);
     ObjectSetInteger(0, PanelBase, OBJPROP_COLOR, clrBlack);
 
     DrawEdit(PanelLabel,
-             Xoff + 2,
+             Xoff + 2 * SignX,
              Yoff + 2,
              PanelLabX,
              PanelLabY,
              true,
-             10,
+             FontSize,
              "Stochastic Multi-Timeframe Indicator",
              ALIGN_CENTER,
              "Consolas",
@@ -401,6 +409,7 @@ void DrawPanel()
              clrNavy,
              clrKhaki,
              clrBlack);
+    ObjectSetInteger(0, PanelLabel, OBJPROP_CORNER, ChartCorner);
 
     for (int i = 0; i < ArraySize(TFValues); i++)
     {
@@ -475,12 +484,12 @@ void DrawPanel()
         }
 
         DrawEdit(TFRowObj,
-                 Xoff + 2,
+                 Xoff + 2 * SignX,
                  Yoff + (PanelMovY + 1) * Rows + 2,
                  PanelMovX,
                  PanelLabY,
                  true,
-                 8,
+                 FontSize,
                  "Click to change the chart",
                  ALIGN_CENTER,
                  "Consolas",
@@ -489,14 +498,15 @@ void DrawPanel()
                  clrNavy,
                  clrKhaki,
                  clrBlack);
+        ObjectSetInteger(0, TFRowObj, OBJPROP_CORNER, ChartCorner);
 
         DrawEdit(IndCurrObj,
-                 Xoff + PanelMovX + 4,
+                 Xoff + (PanelMovX + 4) * SignX,
                  Yoff + (PanelMovY + 1) * Rows + 2,
                  PanelMovX,
                  PanelLabY,
                  true,
-                 8,
+                 FontSize,
                  IndCurrToolTip,
                  ALIGN_CENTER,
                  "Consolas",
@@ -505,14 +515,15 @@ void DrawPanel()
                  IndCurrTextColor,
                  IndCurrBackColor,
                  clrBlack);
+        ObjectSetInteger(0, IndCurrObj, OBJPROP_CORNER, ChartCorner);
 
         DrawEdit(IndPrevDiffObj,
-                 Xoff + PanelMovX * 2 + 6,
+                 Xoff + (PanelMovX * 2 + 6) * SignX,
                  Yoff + (PanelMovY + 1) * Rows + 2,
                  PanelMovX,
                  PanelLabY,
                  true,
-                 8,
+                 FontSize,
                  IndPrevDiffToolTip,
                  ALIGN_CENTER,
                  "Wingdings",
@@ -521,14 +532,15 @@ void DrawPanel()
                  IndPrevDiffTextColor,
                  IndPrevDiffBackColor,
                  clrBlack);
+        ObjectSetInteger(0, IndPrevDiffObj, OBJPROP_CORNER, ChartCorner);
 
         DrawEdit(IndCurrAddObj,
-                 Xoff + PanelMovX * 3 + 8,
+                 Xoff + (PanelMovX * 3 + 8) * SignX,
                  Yoff + (PanelMovY + 1) * Rows + 2,
                  PanelMovX,
                  PanelLabY,
                  true,
-                 8,
+                 FontSize,
                  IndCurrAddToolTip,
                  ALIGN_CENTER,
                  "Wingdings",
@@ -537,6 +549,7 @@ void DrawPanel()
                  IndCurrAddTextColor,
                  IndCurrAddBackColor,
                  clrBlack);
+        ObjectSetInteger(0, IndCurrAddObj, OBJPROP_CORNER, ChartCorner);
 
         Rows++;
     }
@@ -567,12 +580,12 @@ void DrawPanel()
     }
 
     DrawEdit(PanelSig,
-             Xoff + 2,
+             Xoff + 2 * SignX,
              Yoff + (PanelMovY + 1) * Rows + 2,
              PanelLabX,
              PanelLabY,
              true,
-             8,
+             FontSize,
              "Situation Considering All Timeframes",
              ALIGN_CENTER,
              "Consolas",
@@ -581,10 +594,19 @@ void DrawPanel()
              SigColor,
              SigBack,
              clrBlack);
+    ObjectSetInteger(0, PanelSig, OBJPROP_CORNER, ChartCorner);
 
     Rows++;
 
     ObjectSetInteger(0, PanelBase, OBJPROP_XSIZE, PanelRecX);
     ObjectSetInteger(0, PanelBase, OBJPROP_YSIZE, (PanelMovY + 1) * Rows + 3);
+    if ((ChartCorner == CORNER_LEFT_UPPER) || (ChartCorner == CORNER_RIGHT_UPPER))
+    {
+        ObjectSetInteger(0, PanelBase, OBJPROP_YDISTANCE, Yoff);
+    }
+    else
+    {
+        ObjectSetInteger(0, PanelBase, OBJPROP_YDISTANCE, Yoff + (PanelMovY + 1) * Rows + 3 - PanelLabY);
+    }
 }
 //+------------------------------------------------------------------+
