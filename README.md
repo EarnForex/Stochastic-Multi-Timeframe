@@ -7,6 +7,6 @@ The indicator displays overbought/oversold states, whether the stochastic is ris
 ![A multi-timeframe stochastic panel with mixed situation on the currency pair](https://github.com/EarnForex/Stochastic-Multi-Timeframe/blob/main/README_Images/stochastic-multi-timeframe-mt5-eurusd.png)
 
 A detailed description of the indicator can be found here:
-https://www.earnforex.com/metatrader-indicators/stochastic-multi-timeframe/
+https://www.earnforex.com/indicators/stochastic-multi-timeframe/
 
 Any contributions to the code are welcome!
